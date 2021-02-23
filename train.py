@@ -5,8 +5,8 @@
 # 导入系统模块、第三方模块
 import os
 import sys
-from snownlp import sentiment
 
+from snownlp import sentiment
 
 # 当前目录
 basePath = os.path.abspath(os.path.dirname(__file__))
@@ -17,6 +17,7 @@ sys.path.append(basePath)
 from common.log import Log
 from common.utils import removeFileIfExists
 
+# chua
 log = Log()
 
 # 训练用的正向文件、负向文件、结果文件
@@ -32,4 +33,16 @@ if not os.path.isfile(train_negative_file) or not os.path.isfile(train_positive_
 # 重新生成marshal文件
 removeFileIfExists(train_marshal_file)
 
+log.debug('开始训练语料库...')
+sentiment.train(train_negative_file, train_positive_file)
+log.debug('训练完成！')
 
+log.debug('开始保存语料库...')
+sentiment.save(train_marshal_file, iszip=True)
+log.debug('保存完成！')
+
+log.debug('开始载入语料库{}'.format(train_marshal_file))
+sentiment.load(train_marshal_file, iszip=True)
+log.debug('载入完成！')
+
+log.info(sentiment.classify('这真的是太好了！'))
