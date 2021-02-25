@@ -3,6 +3,12 @@
 """
 from snownlp import SnowNLP
 from snownlp import sentiment
+import os
+import sys
+# 当前目录
+basePath = os.path.abspath(os.path.dirname(__file__))
+# 设置当前目录为执行运行目录
+sys.path.append(basePath)
 
 input = "行了，别来烦我了"
 
@@ -53,3 +59,13 @@ print('\n文本概括结果为[{}]'.format(summary))
 keywords = SnowNLP(input).keywords(limit=4)
 print('\n关键词结果为[{}]'.format(keywords))
 
+
+
+# from snownlp.sentiment import Sentiment
+#
+# s1 = Sentiment()
+# s2 = Sentiment()
+# s1.load(os.path.join(basePath,'train/sentiment1.marshal'))
+# s2.load(os.path.join(basePath,'train/sentiment2.marshal'))
+# print(s1)
+# print(s2)
