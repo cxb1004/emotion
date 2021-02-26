@@ -48,7 +48,7 @@ input_neg_53kf = os.path.join(basePath, 'train/data/neg_53kf.txt')
 input_pos_53kf = os.path.join(basePath, 'train/data/pos_53kf.txt')
 
 # 待训练的语料库（支持增量）
-input_corpus = os.path.join(basePath, 'train/data/corpus.txt')
+input_corpus = os.path.join(basePath, 'train/corpus.txt')
 
 # ============================输出文件==================================
 # 临时文件，用于查看新增数据的正负向准确性
@@ -209,7 +209,7 @@ def fileToList(filePath):
     读取文件，把文件行数据变成list
     """
     with open(filePath, 'r', encoding='utf-8') as readFile:
-        return readFile.readlines()
+        return readFile.read().splitlines()
 
 
 def fileToDict(filePath):
@@ -217,7 +217,7 @@ def fileToDict(filePath):
     读取文件，把文件行数据变成字典
     """
     with open(filePath, 'r', encoding='utf-8') as readFile:
-        linelist = readFile.readlines()
+        linelist = readFile.read().splitlines()
         return dict(zip(linelist, list(range(len(linelist)))))
 
 
