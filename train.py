@@ -112,7 +112,7 @@ def sentiment_judge(sentence):
         if rtn == FLAG_POS or rtn == FLAG_NEG:
             return rtn
 
-    rtn = judge_by_53kf_corpus(sentence, SIM_IDX)
+    rtn = judge_by_53kf_corpus(sentence)
     log.debug('   自定义语料库判断结果：{}'.format(rtn))
     if rtn == FLAG_POS or rtn == FLAG_NEG:
         return rtn
@@ -294,10 +294,9 @@ with open(input_corpus, 'r', encoding='utf-8') as input_corpus_file, \
         open(output_neg_tmp, 'w', encoding='utf-8') as output_neg_tmp_file, \
         open(output_pos_tmp, 'w', encoding='utf-8') as output_pos_tmp_file, \
         open(output_neu_tmp, 'w', encoding='utf-8') as output_neu_tmp_file:
-    all_sentences = input_corpus_file.readlines()
+    all_sentences = input_corpus_file.read().splitlines()
     cnt_all = len(all_sentences)
     for sentence in all_sentences:
-        cnt_all = cnt_all + 1
         # 对当前句进行正负向判别
         sentiment_idx = sentiment_judge(sentence)
         if sentiment_idx == FLAG_NEG:
