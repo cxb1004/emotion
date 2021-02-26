@@ -108,16 +108,17 @@ def sentiment_judge(sentence):
     if test_Model is not None:
         rtn = judge_by_model(sentence, POS_IDX, NEG_IDX)
         # 如果模型已经判断出正负向，直接返回（中性的话进行下一步判断）
-        log.debug('   模型判断结果:{}'.format(rtn))
+        log.debug('     模型判断结果:{}'.format(rtn))
         if rtn == FLAG_POS or rtn == FLAG_NEG:
             return rtn
 
     rtn = judge_by_53kf_corpus(sentence)
-    log.debug('   自定义语料库判断结果：{}'.format(rtn))
+    log.debug('     自定义语料库判断结果：{}'.format(rtn))
     if rtn == FLAG_POS or rtn == FLAG_NEG:
         return rtn
 
     rtn = judge_by_sentiment_words(sentence)
+    log.debug('     正负向词库判断结果：{}'.format(rtn))
     if rtn == FLAG_POS or rtn == FLAG_NEG:
         return rtn
     else:
