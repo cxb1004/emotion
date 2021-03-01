@@ -224,7 +224,7 @@ def fileToDict(filePath):
 """
 主程序
 """
-# 待训练的语料数据文件是否存在
+# # 待训练的语料数据文件是否存在
 if not isFileExist(input_corpus):
     log.error('无法读取待训练的语料库文件，请确认文件存在：{}'.format(input_corpus))
     log.error('程序异常终止！')
@@ -311,31 +311,44 @@ log.info('数据分析完成：一共{}条数据，其中正向数据{}条，负
 
 # 备注：如果用户希望先预览一下判断结果，以下代码可以分出去单独执行，让用户查看tmp文件
 log.info('开始合并数据...')
-log.info('开始合并正向语料库数据：{} + {} -> {}'.format(output_pos_tmp_file, pos_merge, output_pos_file))
+removeFileIfExists(output_pos_file)
+removeFileIfExists(output_neg_file)
+
+log.info('开始合并正向语料库数据：{} + {} -> {}'.format(output_pos_tmp, pos_merge, output_pos_file))
 with open(pos_merge, 'r', encoding='utf-8') as baseFile, \
-        open(output_pos_tmp_file, 'r', encoding='utf-8') as mergeFile, \
+        open(output_pos_tmp, 'r', encoding='utf-8') as mergeFile, \
         open(output_pos_file, 'w', encoding='utf-8') as resultFile:
     baseList = baseFile.read().splitlines()
+    log.debug('baseList数量{}'.format(len(baseList)))
     mergeList = mergeFile.read().splitlines()
-    baseList.extend(mergeList)
-    baseList = list(set(baseList))
-    resultFile.writelines(baseList)
-    log.info('正向语料写入完毕：{} 条'.format(len(baseList)))
+    log.debug('mergeList数量{}'.format(len(mergeList)))
+    writeData = baseList + mergeList
+    log.debug('合并以后的数量{}'.format(len(writeData)))
+    writeData = list(set(writeData))
+    log.debug('去重以后的数量{}'.format(len(writeData)))
+    writeData = list(item + '\n' for item in writeData)
+    resultFile.writelines(writeData)
+    log.info('正向语料写入完毕：{} 条'.format(len(writeData)))
 
-log.info('开始合并负向语料库数据：{} + {} -> {}'.format(output_neg_tmp_file, neg_merge, output_neg_file))
+log.info('开始合并负向语料库数据：{} + {} -> {}'.format(output_neg_tmp, neg_merge, output_neg_file))
 with open(neg_merge, 'r', encoding='utf-8') as baseFile, \
-        open(output_neg_tmp_file, 'r', encoding='utf-8') as mergeFile, \
+        open(output_neg_tmp, 'r', encoding='utf-8') as mergeFile, \
         open(output_neg_file, 'w', encoding='utf-8') as resultFile:
     baseList = baseFile.read().splitlines()
+    log.debug('baseList数量{}'.format(len(baseList)))
     mergeList = mergeFile.read().splitlines()
-    baseList.extend(mergeList)
-    baseList = list(set(baseList))
-    resultFile.writelines(baseList)
-    log.info('正向语料写入完毕：{} 条'.format(len(baseList)))
+    log.debug('mergeList数量{}'.format(len(mergeList)))
+    writeData = baseList + mergeList
+    log.debug('合并以后的数量{}'.format(len(writeData)))
+    writeData = list(set(writeData))
+    log.debug('去重以后的数量{}'.format(len(writeData)))
+    writeData = list(item + '\n' for item in writeData)
+    resultFile.writelines(writeData)
+    log.info('负向语料写入完毕：{} 条'.format(len(writeData)))
 
 log.info('开始训练模型...')
 train_Model = Sentiment()
-train_Model.train(neg_file=output_neg_file, pos_file=output_pos_file)
+train_Model.train(neg_docs=output_neg_file, pos_docs=output_pos_file)
 log.info('模型训练完成')
 
 log.info('开始生成模型文件...')
