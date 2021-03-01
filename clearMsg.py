@@ -39,8 +39,8 @@ z	    访客填写快捷表单	             ✔      访客填写的表单数据
 """
 # 第一次训练的时候，把所有的数据都分析进去
 # 第二次之后，可以把非人为数据过滤掉
-# filter_talk_tag = ['e', 'a', 'b', 'h', 'j', 'k', 'm', 'o', 'q', 'u', 'w']
-filter_talk_tag = ['e']
+# filter_talk_tag = {'e': 'e', 'a': 'a', 'b': 'b', 'h': 'h', 'j': 'j', 'k': 'k', 'm': 'm', 'o': 'o', 'q': 'q', 'u': 'u', 'w': 'w' }
+filter_talk_tag = {'e': 'e'}
 
 input_msg_file = os.path.join(basePath, 'train/msg.txt')
 out_corpus_file = os.path.join(basePath, 'train/corpus.txt')
@@ -60,13 +60,12 @@ with open(input_msg_file, 'r', encoding='utf-8') as inputFile:
             # 如果下行数据出错（下标越界），就把下行文本和当前文本合并，再读取下下行的文本数据；
             tag = str(line_data[1])
             # 过滤掉非人为数据
-            if filter_talk_tag.index(tag) >= 0:
+            if filter_talk_tag.get(tag) is not None:
                 continue
             sentence = str(line_data[3])
-
         except:
-            # 存在出错的概率，如果聊天数据里面
             log.warn('数据出错{}'.format(line_data))
+            continue
         else:
             bs = BeautifulSoup(sentence, "html.parser")
             line = bs.text
