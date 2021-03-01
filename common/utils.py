@@ -14,7 +14,7 @@ def removeFileIfExists(filePath):
     """
     if os.path.isfile(filePath):
         os.remove(filePath)
-        log.debug('已经删除存在的文件{}'.format(filePath))
+        log.debug('删除已经存在的文件{}'.format(filePath))
 
 
 def replaceMutiSpace(str):
