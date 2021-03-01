@@ -7,9 +7,9 @@
 # 导入系统模块、第三方模块
 import os
 import sys
-
-import jieba
 from snownlp.sentiment import Sentiment
+from snownlp import sentiment
+import jieba
 
 # 当前目录
 basePath = os.path.abspath(os.path.dirname(__file__))
@@ -18,7 +18,7 @@ sys.path.append(basePath)
 
 # 导入自开发模块
 from common.log import Log
-from common.utils import isFileExist, removeFileIfExists
+from common.utils import removeFileIfExists, size_format, isFileExist
 from common.textSimilarity import CosSim
 
 """
@@ -315,6 +315,7 @@ removeFileIfExists(output_pos_file)
 removeFileIfExists(output_neg_file)
 
 log.info('开始合并正向语料库数据：{} + {} -> {}'.format(output_pos_tmp, pos_merge, output_pos_file))
+pos_docs = []
 with open(pos_merge, 'r', encoding='utf-8') as baseFile, \
         open(output_pos_tmp, 'r', encoding='utf-8') as mergeFile, \
         open(output_pos_file, 'w', encoding='utf-8') as resultFile:
@@ -322,15 +323,16 @@ with open(pos_merge, 'r', encoding='utf-8') as baseFile, \
     log.debug('baseList数量{}'.format(len(baseList)))
     mergeList = mergeFile.read().splitlines()
     log.debug('mergeList数量{}'.format(len(mergeList)))
-    writeData = baseList + mergeList
-    log.debug('合并以后的数量{}'.format(len(writeData)))
-    writeData = list(set(writeData))
-    log.debug('去重以后的数量{}'.format(len(writeData)))
-    writeData = list(item + '\n' for item in writeData)
-    resultFile.writelines(writeData)
-    log.info('正向语料写入完毕：{} 条'.format(len(writeData)))
+    pos_docs = baseList + mergeList
+    log.debug('合并以后的数量{}'.format(len(pos_docs)))
+    pos_docs = list(set(pos_docs))
+    log.debug('去重以后的数量{}'.format(len(pos_docs)))
+    pos_docs = list(item + '\n' for item in pos_docs)
+    resultFile.writelines(pos_docs)
+    log.info('正向语料写入完毕：{} 条'.format(len(pos_docs)))
 
 log.info('开始合并负向语料库数据：{} + {} -> {}'.format(output_neg_tmp, neg_merge, output_neg_file))
+neg_docs = []
 with open(neg_merge, 'r', encoding='utf-8') as baseFile, \
         open(output_neg_tmp, 'r', encoding='utf-8') as mergeFile, \
         open(output_neg_file, 'w', encoding='utf-8') as resultFile:
@@ -338,21 +340,24 @@ with open(neg_merge, 'r', encoding='utf-8') as baseFile, \
     log.debug('baseList数量{}'.format(len(baseList)))
     mergeList = mergeFile.read().splitlines()
     log.debug('mergeList数量{}'.format(len(mergeList)))
-    writeData = baseList + mergeList
-    log.debug('合并以后的数量{}'.format(len(writeData)))
-    writeData = list(set(writeData))
-    log.debug('去重以后的数量{}'.format(len(writeData)))
-    writeData = list(item + '\n' for item in writeData)
-    resultFile.writelines(writeData)
-    log.info('负向语料写入完毕：{} 条'.format(len(writeData)))
+    neg_docs = baseList + mergeList
+    log.debug('合并以后的数量{}'.format(len(neg_docs)))
+    neg_docs = list(set(neg_docs))
+    log.debug('去重以后的数量{}'.format(len(neg_docs)))
+    neg_docs = list(item + '\n' for item in neg_docs)
+    resultFile.writelines(neg_docs)
+    log.info('负向语料写入完毕：{} 条'.format(len(neg_docs)))
 
 log.info('开始训练模型...')
+removeFileIfExists(output_marshal_file)
+log.info('负向语料库：{} '.format(output_neg_file))
+log.info('正向语料库：{} '.format(output_pos_file))
+# 可以使用Sentiment()对象进行训练，但是要注意neg_docs/pos_docs是数据，而不是数据文件
 train_Model = Sentiment()
-train_Model.train(neg_docs=output_neg_file, pos_docs=output_pos_file)
+train_Model.train(neg_docs=neg_docs, pos_docs=pos_docs)
 log.info('模型训练完成')
 
 log.info('开始生成模型文件...')
-removeFileIfExists(output_marshal_file)
 train_Model.save(output_marshal_file)
 log.info('模型文件生成成功：{}'.format(output_marshal_file))
 
