@@ -48,5 +48,19 @@ def isFileExist(file):
         return True
     return False
 
+
+def size_format(size):
+    # size = os.path.getsize(path)
+    if size < 1000:
+        return '%i' % size + 'size'
+    elif 1000 <= size < 1000000:
+        return '%.1f' % float(size / 1000) + 'KB'
+    elif 1000000 <= size < 1000000000:
+        return '%.1f' % float(size / 1000000) + 'MB'
+    elif 1000000000 <= size < 1000000000000:
+        return '%.1f' % float(size / 1000000000) + 'GB'
+    elif 1000000000000 <= size:
+        return '%.1f' % float(size / 1000000000000) + 'TB'
+
 # txt = 'Hi~您好呀亲，我这边是官网小编，您是想拍婚纱照吗？{53b#32#}拍婚纱'
 # print(removeEmoji(txt))
