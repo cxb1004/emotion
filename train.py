@@ -52,22 +52,21 @@ input_corpus = os.path.join(basePath, 'train/corpus.txt')
 
 # ============================输出文件==================================
 # 临时文件，用于查看新增数据的正负向准确性
-output_neg_tmp = os.path.join(basePath, 'train/data/neg_add.tmp')
-output_pos_tmp = os.path.join(basePath, 'train/data/pos_add.tmp')
-output_neu_tmp = os.path.join(basePath, 'train/data/neu_add.tmp')
+output_neg_tmp = os.path.join(basePath, 'train/neg_add.tmp')
+output_pos_tmp = os.path.join(basePath, 'train/pos_add.tmp')
+output_neu_tmp = os.path.join(basePath, 'train/neu_add.tmp')
 
 # neg.txt/pos.txt是集成以后的语料库，sentiment.marshal是生成的模型文件
-output_neg_file = os.path.join(basePath, 'train/data/neg.txt')
-output_pos_file = os.path.join(basePath, 'train/data/pos.txt')
-output_neu_file = os.path.join(basePath, 'train/data/neu.txt')
-output_marshal_file = os.path.join(basePath, 'train/data/sentiment.marshal')
+output_neg_file = os.path.join(basePath, 'train/neg.txt')
+output_pos_file = os.path.join(basePath, 'train/pos.txt')
+output_marshal_file = os.path.join(basePath, 'train/sentiment.marshal')
 
 # 文本相似度阀值设定
-SIM_IDX = 0.8
+SIM_IDX = 0.9
 
 # 模型判断正负向阀值设定
-POS_IDX = 0.8
-NEG_IDX = 0.2
+POS_IDX = 0.9
+NEG_IDX = 0.1
 
 FLAG_NEG = -1
 FLAG_POS = 1
@@ -262,8 +261,6 @@ else:
     log.info('完成载入已有情感判断模型')
 
 # 检查自定义的语料库和正负向词库
-
-
 if not isFileExist(input_neg_words) \
         or not isFileExist(input_pos_words) \
         or not isFileExist(input_neg_53kf) \
@@ -314,18 +311,36 @@ log.info('数据分析完成：一共{}条数据，其中正向数据{}条，负
 
 # 备注：如果用户希望先预览一下判断结果，以下代码可以分出去单独执行，让用户查看tmp文件
 log.info('开始合并数据...')
-#
-# mergeDataForTrain()
-# log.info('完成合并数据')
-#
-# log.info('开始训练模型...')
-# train_Model = Sentiment()
-# train_Model.train(neg_file=output_neg_file, pos_file=output_pos_file)
-# log.info('模型训练完成')
-#
-# log.info('开始生成模型文件...')
-# removeFileIfExists(output_marshal_file)
-# train_Model.save(output_marshal_file)
-# log.info('模型文件生成成功：{}'.format(output_marshal_file))
+log.info('开始合并正向语料库数据：{} + {} -> {}'.format(output_pos_tmp_file, pos_merge, output_pos_file))
+with open(pos_merge, 'r', encoding='utf-8') as baseFile, \
+        open(output_pos_tmp_file, 'r', encoding='utf-8') as mergeFile, \
+        open(output_pos_file, 'w', encoding='utf-8') as resultFile:
+    baseList = baseFile.read().splitlines()
+    mergeList = mergeFile.read().splitlines()
+    baseList.extend(mergeList)
+    baseList = list(set(baseList))
+    resultFile.writelines(baseList)
+    log.info('正向语料写入完毕：{} 条'.format(len(baseList)))
+
+log.info('开始合并负向语料库数据：{} + {} -> {}'.format(output_neg_tmp_file, neg_merge, output_neg_file))
+with open(neg_merge, 'r', encoding='utf-8') as baseFile, \
+        open(output_neg_tmp_file, 'r', encoding='utf-8') as mergeFile, \
+        open(output_neg_file, 'w', encoding='utf-8') as resultFile:
+    baseList = baseFile.read().splitlines()
+    mergeList = mergeFile.read().splitlines()
+    baseList.extend(mergeList)
+    baseList = list(set(baseList))
+    resultFile.writelines(baseList)
+    log.info('正向语料写入完毕：{} 条'.format(len(baseList)))
+
+log.info('开始训练模型...')
+train_Model = Sentiment()
+train_Model.train(neg_file=output_neg_file, pos_file=output_pos_file)
+log.info('模型训练完成')
+
+log.info('开始生成模型文件...')
+removeFileIfExists(output_marshal_file)
+train_Model.save(output_marshal_file)
+log.info('模型文件生成成功：{}'.format(output_marshal_file))
 
 log.info('程序正常结束')
