@@ -334,6 +334,9 @@ with open(pos_merge, 'r', encoding='utf-8') as baseFile, \
     log.debug('合并以后的数量{}'.format(len(pos_docs)))
     pos_docs = list(set(pos_docs))
     log.debug('去重以后的数量{}'.format(len(pos_docs)))
+    # 增加自定义语料库的权重，即把自定义的语料库翻倍加入待训练数据
+    pos_docs = pos_docs + list(set(list_pos_53kf)) * 10
+    log.debug('增加自定义语料权重之后数量{}'.format(len(pos_docs)))
     pos_docs = list(item + '\n' for item in pos_docs)
     resultFile.writelines(pos_docs)
     log.info('正向语料写入完毕：{} 条'.format(len(pos_docs)))
@@ -351,6 +354,9 @@ with open(neg_merge, 'r', encoding='utf-8') as baseFile, \
     log.debug('合并以后的数量{}'.format(len(neg_docs)))
     neg_docs = list(set(neg_docs))
     log.debug('去重以后的数量{}'.format(len(neg_docs)))
+    # 增加自定义语料库的权重，即把自定义的语料库翻倍加入待训练数据
+    neg_docs = neg_docs + list(set(list_neg_53kf)) * 10
+    log.debug('增加自定义语料权重之后数量{}'.format(len(neg_docs)))
     neg_docs = list(item + '\n' for item in neg_docs)
     resultFile.writelines(neg_docs)
     log.info('负向语料写入完毕：{} 条'.format(len(neg_docs)))
