@@ -67,7 +67,6 @@ for row_data in rows_data[1:]:
         row_data[4].value = True
     else:
         row_data[4].value = False
-        log.error('测试错误: 文本: {}    分值：{}'.format(text, score))
 
 original_verify_data.save(copy_verify_file)
 
