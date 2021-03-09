@@ -151,7 +151,7 @@ class EmotionClassify:
             rtn_value['classify'] = 'CosSim'
         else:
             # 如果自定义正负向语料库没有结果，使用模型进行判断
-            v = self.__senti.ec(text)
+            v = self.__senti.classify(text)
             if v >= self.__VALUE_POS:
                 rtn_value['emotion'] = self.FLAG_POS
                 rtn_value['emotion_tag'] = self.DICT_TAG_S.get(self.FLAG_POS)
@@ -168,5 +168,5 @@ class EmotionClassify:
                 rtn_value['emotion_tag'] = self.DICT_TAG_S.get(self.FLAG_NEU)
                 rtn_value['emotion_value'] = v
                 rtn_value['classify'] = 'Model'
-        log.debug('预测结果{}'.format(rtn_value))
+        # log.debug('预测结果{}'.format(rtn_value))
         return rtn_value
