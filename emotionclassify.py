@@ -123,7 +123,7 @@ class EmotionClassify:
         emotion_value=相似值/模型判断值
         classify: CosSim/Model
         """
-        log.debug('预测文本：{}'.format(text))
+        # log.debug('预测文本：{}'.format(text))
         # emotion: 1/-1/0  emotion_tag = positive/negative/neutral  emotion_value=相似值/模型判断值  classify: CosSim/Model
         rtn_value = {'emotion': None, 'emotion_tag': None, 'emotion_value': None, 'classify': None}
         # 先根据自定义正负向语料库进行文本匹配计算
