@@ -109,7 +109,7 @@ def copyFile(file=None, path=None, is_overwrite=False):
             # 如果不允许覆盖，就抛出异常
             raise Exception('目标目录该文件已经存在，无法复制！')
 
-    shutil.copyfile(file, target_file)
+    shutil.copy2(file, target_file)
 
 # print(get_timestamp())
 # print(get_timestamp('s'))
