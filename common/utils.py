@@ -1,5 +1,6 @@
 import os
 import re
+import time
 
 from common.log import Log
 
@@ -49,8 +50,8 @@ def isFileExist(file):
     return False
 
 
-def size_format(size):
-    # size = os.path.getsize(path)
+def file_size_format(file):
+    size = os.path.getsize(file)
     if size < 1000:
         return '%i' % size + 'size'
     elif 1000 <= size < 1000000:
@@ -62,5 +63,34 @@ def size_format(size):
     elif 1000000000000 <= size:
         return '%.1f' % float(size / 1000000000000) + 'TB'
 
-# txt = 'Hi~您好呀亲，我这边是官网小编，您是想拍婚纱照吗？{53b#32#}拍婚纱'
-# print(removeEmoji(txt))
+
+def file_update_time_format(file):
+    mtime = os.stat(file).st_mtime
+    file_modify_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(mtime))
+    return file_modify_time
+
+
+def get_timestamp(format=None):
+    t = time.time()
+    if format is None:
+        return t
+    elif format == 's':
+        # 返回秒级时间戳
+        return int(t)
+    elif format == 'ms':
+        # 返回毫秒级时间戳
+        return int(round(t * 1000))
+    elif format == 'ymdhms':
+        return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))
+    elif format == 'y-m-d':
+        return time.strftime("%Y-%m-%d", time.localtime(t))
+    elif format == 'ymd':
+        return time.strftime("%Y%m%d", time.localtime(t))
+
+
+# print(get_timestamp())
+# print(get_timestamp('s'))
+# print(get_timestamp('ms'))
+# print(get_timestamp('ymdhms'))
+# print(get_timestamp('y-m-d'))
+# print(get_timestamp('ymd'))
