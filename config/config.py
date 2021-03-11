@@ -12,8 +12,9 @@ class Config:
         __CONFIG_FILE_NAME = 'config.ini'
         # 读入配置文件
         __cf = configparser.RawConfigParser()
-        __cf.read(os.path.join(__CONFIG_FILE_PATH, __CONFIG_FILE_NAME))
-        print('读入config.ini配置：' + __cf.get('version', 'name'))
+        __cf.read(os.path.join(__CONFIG_FILE_PATH, __CONFIG_FILE_NAME), encoding='utf-8')
+        print('读入config.ini配置：\n配置文件路径:{}\n配置文件版本:{}'.format(os.path.join(__CONFIG_FILE_PATH, __CONFIG_FILE_NAME),
+                                                             __cf.get('version', 'name')))
     except Exception as e:
         print("载入配置文件失败: " + os.path.join(__CONFIG_FILE_PATH, __CONFIG_FILE_NAME))
         print(e)
