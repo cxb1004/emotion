@@ -102,7 +102,7 @@ def copyFile(file=None, path=None, is_overwrite=False):
 
     # 判断目标文件是否存在
     if isFileExist(target_file):
-        if not is_overwrite:
+        if is_overwrite:
             # 如果允许覆盖，就执行覆盖操作（先删除，后复制）
             removeFileIfExists(target_file)
         else:
