@@ -1,5 +1,6 @@
 import os
 import re
+import shutil
 import time
 
 from common.log import Log
@@ -80,13 +81,35 @@ def get_timestamp(format=None):
     elif format == 'ms':
         # 返回毫秒级时间戳
         return int(round(t * 1000))
-    elif format == 'ymdhms':
+    elif format == 'y-m-dhms':
         return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))
     elif format == 'y-m-d':
         return time.strftime("%Y-%m-%d", time.localtime(t))
     elif format == 'ymd':
         return time.strftime("%Y%m%d", time.localtime(t))
+    elif format == 'ymdhms':
+        return time.strftime("%Y%m%d%H%M%S", time.localtime(t))
 
+
+def copyFile(file=None, path=None, is_overwrite=False):
+    # 检查待复制的文件是否存在
+    if not isFileExist(file):
+        raise Exception('待复制的文件不存在！')
+
+    # 获得相同的文件名
+    file_name = os.path.basename(file)
+    target_file = os.path.join(path, file_name)
+
+    # 判断目标文件是否存在
+    if isFileExist(target_file):
+        if not is_overwrite:
+            # 如果允许覆盖，就执行覆盖操作（先删除，后复制）
+            removeFileIfExists(target_file)
+        else:
+            # 如果不允许覆盖，就抛出异常
+            raise Exception('目标目录该文件已经存在，无法复制！')
+
+    shutil.copyfile(file, target_file)
 
 # print(get_timestamp())
 # print(get_timestamp('s'))
