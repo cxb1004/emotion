@@ -19,7 +19,7 @@ basePath = os.path.abspath(os.path.dirname(__file__))
 # 设置当前目录为执行运行目录
 sys.path.append(basePath)
 
-from config.config import Config
+from config import Config
 from common.log import Log
 from common.utils import file_update_time_format, isFileExist, get_timestamp, copyFile
 
@@ -91,44 +91,41 @@ online_corpus_pos_53kf_path = os.path.join(deploy_folder, corpus_pos_53kf_filena
 online_corpus_neg_53kf_path = os.path.join(deploy_folder, corpus_neg_53kf_filename)
 
 if isFileExist(online_model_file_path):
-    log.info('准备备份的文件:{}  更新时间：{}'.format(online_model_file_path, file_update_time_format(online_model_file_path)))
+    log.info('备份的文件:{}  更新时间：{}'.format(online_model_file_path, file_update_time_format(online_model_file_path)))
+    copyFile(online_model_file_path, backup_folder)
 else:
-    log.error('没找到准备备份的文件：{}'.format(online_model_file_path))
-    exit(999)
+    log.warn('没找到准备备份的文件：{}'.format(online_model_file_path))
 
 if isFileExist(online_corpus_pos_path):
-    log.info('准备备份的文件:{}  更新时间：{}'.format(online_corpus_pos_path, file_update_time_format(online_corpus_pos_path)))
+    log.info('备份的文件:{}  更新时间：{}'.format(online_corpus_pos_path, file_update_time_format(online_corpus_pos_path)))
+    copyFile(online_corpus_pos_path, backup_folder)
 else:
-    log.error('没找到准备备份的文件：{}'.format(online_corpus_pos_path))
-    exit(999)
+    log.warn('没找到准备备份的文件：{}'.format(online_corpus_pos_path))
 
 if isFileExist(online_corpus_neg_path):
-    log.info('准备备份的文件:{}  更新时间：{}'.format(online_corpus_neg_path, file_update_time_format(online_corpus_neg_path)))
+    log.info('备份的文件:{}  更新时间：{}'.format(online_corpus_neg_path, file_update_time_format(online_corpus_neg_path)))
+    copyFile(online_corpus_neg_path, backup_folder)
 else:
-    log.error('没找到准备备份的文件：{}'.format(online_corpus_neg_path))
-    exit(999)
+    log.warn('没找到准备备份的文件：{}'.format(online_corpus_neg_path))
 
 if isFileExist(online_corpus_pos_53kf_path):
     log.info(
-        '准备备份的文件:{}  更新时间：{}'.format(online_corpus_pos_53kf_path, file_update_time_format(online_corpus_pos_53kf_path)))
+        '备份的文件:{}  更新时间：{}'.format(online_corpus_pos_53kf_path, file_update_time_format(online_corpus_pos_53kf_path)))
+    copyFile(online_corpus_pos_53kf_path, backup_folder)
 else:
-    log.error('没找到准备备份的文件：{}'.format(online_corpus_pos_53kf_path))
-    exit(999)
+    log.warn('没找到准备备份的文件：{}'.format(online_corpus_pos_53kf_path))
 
 if isFileExist(online_corpus_neg_53kf_path):
     log.info(
-        '准备备份的文件:{}  更新时间：{}'.format(online_corpus_neg_53kf_path, file_update_time_format(online_corpus_neg_53kf_path)))
+        '备份的文件:{}  更新时间：{}'.format(online_corpus_neg_53kf_path, file_update_time_format(online_corpus_neg_53kf_path)))
+    copyFile(online_corpus_neg_53kf_path, backup_folder)
 else:
-    log.error('没找到准备备份的文件：{}'.format(online_corpus_neg_53kf_path))
-    exit(999)
+    log.warn('没找到准备备份的文件：{}'.format(online_corpus_neg_53kf_path))
 
-log.info('备份中...')
 os.makedirs(backup_folder)
-copyFile(online_model_file_path, backup_folder)
-copyFile(online_corpus_pos_path, backup_folder)
-copyFile(online_corpus_neg_path, backup_folder)
-copyFile(online_corpus_pos_53kf_path, backup_folder)
-copyFile(online_corpus_neg_53kf_path, backup_folder)
+
+
+
 log.info('备份完成：{}'.format(backup_folder))
 
 log.info('发布中...')
