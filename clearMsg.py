@@ -23,8 +23,13 @@ sys.path.append(basePath)
 # 导入自开发模块
 from common.log import Log
 from common.utils import removeFileIfExists, remove53Emoji
+from config import Config
 
 log = Log()
+baseConfig = Config()
+
+trainPath = baseConfig.get_value('project', 'train_folder')
+train_corpus_txt = baseConfig.get_value('project', 'train_corpus_txt')
 
 """
 对话资料type说明：
@@ -50,8 +55,8 @@ z	    访客填写快捷表单	             ✔      访客填写的表单数据
 # filter_talk_tag = {'e': 'e', 'a': 'a', 'b': 'b', 'h': 'h', 'j': 'j', 'k': 'k', 'm': 'm', 'o': 'o', 'q': 'q', 'u': 'u', 'w': 'w' }
 filter_talk_tag = {'e': 'e'}
 
-input_msg_file = os.path.join(basePath, 'train/msg.txt')
-out_corpus_file = os.path.join(basePath, 'train/corpus.txt')
+input_msg_file = os.path.join(trainPath, 'msg.txt')
+out_corpus_file = os.path.join(trainPath, 'corpus.txt')
 
 if not os.path.isfile(input_msg_file):
     log.error('原始语料库文件不存在：{}'.format(input_msg_file))

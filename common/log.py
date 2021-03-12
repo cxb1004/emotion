@@ -1,5 +1,5 @@
 import logging.handlers
-from config.config import Config
+from config import Config
 
 
 class Log:
