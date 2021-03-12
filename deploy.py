@@ -45,6 +45,7 @@ train_data_folder = baseConfig.get_value('project', 'train_data_folder')
 deploy_folder = baseConfig.get_value('project', 'deploy_folder')
 # 备份目录
 backup_folder = os.path.join(deploy_folder, get_timestamp('ymdhms'))
+os.makedirs(backup_folder)
 
 # 组装文件全路径
 model_file_path_r = os.path.join(train_folder, model_filename_r)
@@ -121,10 +122,6 @@ if isFileExist(online_corpus_neg_53kf_path):
     copyFile(online_corpus_neg_53kf_path, backup_folder)
 else:
     log.warn('没找到准备备份的文件：{}'.format(online_corpus_neg_53kf_path))
-
-os.makedirs(backup_folder)
-
-
 
 log.info('备份完成：{}'.format(backup_folder))
 
