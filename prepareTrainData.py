@@ -1,7 +1,32 @@
 """
 根据自定义的语料库corpus.txt和train/data下的正负词库，区分语料库里的正向、负向、中性句
-然后和已发布的neg.txt/pos.txt进行整个，之后训练出sentiment.marshal
+然后和已发布的neg.txt/pos.txt进行整合，最终获得训练模型使用的文件
 
+主业务逻辑：
+1、获取待合并的正负向语料库（要么是线上deploy的，要么是默认的_default）
+2、如果train/data目录下的数据文件不存在，停止应用
+3、按行对待训练的预料进行正负向判断
+
+判断结果为正向，写入pos_add.tmp
+判断结果为负向，写入neg_add.tmp
+判断结果为中性，写入neu_add.tmp
+4、结合步骤1中确定的待合并的语料库，把正负向语料分别进行合并，获得文件:
+neg.txt = neg_add.tmp + neg_merge(线上neg.txt 或 默认 neg_default.txt)
+pos.txt = pos_add.tmp + pos_merge(线上pos.txt 或 默认 pos_default.txt)
+这两个文件将会用于模型训练
+
+输入文件：
+deploy目录下：
+    neg.txt / pos.txt / sentiment.marshal ：使用既有的模型，对原始语料进行正负向判断
+train/data目录下：
+    neg_default.txt / pos_default.txt：在没有deploy的数据下，使用默认数据进行训练
+    neg_53kf.txt / pos_53kf.txt：
+    neg_words.txt / pos_words.txt：
+输出文件：
+train目录下：
+    neg_add.tmp / pos_add.tmp / neu_add.tmp
+    neg.txt / pos.txt
+    sentiment.marshal
 
 """
 # 导入系统模块、第三方模块
@@ -20,56 +45,62 @@ sys.path.append(basePath)
 from common.log import Log
 from common.utils import isFileExist, removeFileIfExists
 from common.textSimilarity import CosSim
+from config import Config
 
 """
 全局变量
 """
 log = Log()
+baseConfig = Config()
+train_folder = baseConfig.get_value('project', 'train_folder')
+train_data_folder = baseConfig.get_value('project', 'train_data_folder')
+deploy_folder = baseConfig.get_value('project', 'deploy_folder')
 
 # ============================读入文件==================================
 # 线上已经发布的模型
 # neg.txt/pos.txt文件用于训练数据合并
 # sentiment.marshal用于模型判断正负向功能
-input_neg_deploy = os.path.join(basePath, 'deploy/neg.txt')
-input_pos_deploy = os.path.join(basePath, 'deploy/pos.txt')
-input_marshal_deploy = os.path.join(basePath, 'deploy/sentiment.marshal')
+input_neg_deploy = os.path.join(deploy_folder, 'neg.txt')
+input_pos_deploy = os.path.join(deploy_folder, 'pos.txt')
+input_marshal_deploy = os.path.join(deploy_folder, 'sentiment.marshal')
 
 # 用于在没有_deploy资源的时候，和新增训练数据进行合并训练
 # 默认数据是酒店评论数据，可能有偏差，但是总比没有基础数据、完全依靠运营设定要好
-input_neg_default = os.path.join(basePath, 'train/data/neg_default.txt')
-input_pos_default = os.path.join(basePath, 'train/data/pos_default.txt')
+input_neg_default = os.path.join(train_data_folder, 'neg_default.txt')
+input_pos_default = os.path.join(train_data_folder, 'pos_default.txt')
 
 # 正负向词库
-input_neg_words = os.path.join(basePath, 'train/data/neg_words.txt')
-input_pos_words = os.path.join(basePath, 'train/data/pos_words.txt')
+input_neg_words = os.path.join(train_data_folder, 'neg_words.txt')
+input_pos_words = os.path.join(train_data_folder, 'pos_words.txt')
 
 # 快服自定义正负向语料库
-input_neg_53kf = os.path.join(basePath, 'train/data/neg_53kf.txt')
-input_pos_53kf = os.path.join(basePath, 'train/data/pos_53kf.txt')
+input_neg_53kf = os.path.join(train_data_folder, 'neg_53kf.txt')
+input_pos_53kf = os.path.join(train_data_folder, 'pos_53kf.txt')
 
 # 待训练的语料库（支持增量）
-input_corpus = os.path.join(basePath, 'train/corpus.txt')
+input_corpus = os.path.join(train_folder, 'corpus.txt')
 
 # ============================输出文件==================================
 # 临时文件，用于查看新增数据的正负向准确性
-output_neg_tmp = os.path.join(basePath, 'train/neg_add.tmp')
-output_pos_tmp = os.path.join(basePath, 'train/pos_add.tmp')
-output_neu_tmp = os.path.join(basePath, 'train/neu_add.tmp')
+output_neg_tmp = os.path.join(train_folder, 'neg_add.tmp')
+output_pos_tmp = os.path.join(train_folder, 'pos_add.tmp')
+output_neu_tmp = os.path.join(train_folder, 'neu_add.tmp')
 
 # neg.txt/pos.txt是集成以后的语料库，sentiment.marshal是生成的模型文件
-output_neg_file = os.path.join(basePath, 'train/neg.txt')
-output_pos_file = os.path.join(basePath, 'train/pos.txt')
-output_marshal_file = os.path.join(basePath, 'train/sentiment.marshal')
+output_neg_file = os.path.join(train_folder, 'neg.txt')
+output_pos_file = os.path.join(train_folder, 'pos.txt')
+# 由于训练模型改到train.py里面执行，本程序暂时没有用到这个变量
+output_marshal_file = os.path.join(train_folder, 'sentiment.marshal')
 
 # 文本相似度阀值设定
-SIM_IDX = 0.9
+SIM_IDX = float(baseConfig.get_value('project', 'train_sim_idx'))
 
 # 模型判断正负向阀值设定
-POS_IDX = 0.9
-NEG_IDX = 0.1
+POS_IDX = float(baseConfig.get_value('project', 'train_pos_idx'))
+NEG_IDX = float(baseConfig.get_value('project', 'train_neg_idx'))
 
 # 正负向词语命中数量
-WORDS_MATCH_LIMIT = 2
+WORDS_MATCH_LIMIT = int(baseConfig.get_value('project', 'train_words_match_limit'))
 
 FLAG_NEG = -1
 FLAG_POS = 1
@@ -93,10 +124,6 @@ test_Model = None
 train_Model = None
 
 simUtils = None
-
-# 第一次训练集成三部分数据：基础语料库（_default）\快服自己的语料库(_53kf)\新增的语料库(corpus.txt)
-# 第二次训练集成两部分数据：线上语料库\新增的语料库(corpus.txt)
-is_first_train = False
 
 """
 函数
@@ -238,7 +265,7 @@ if not isFileExist(input_corpus):
 # 检查要合并的语料库文件
 if not isFileExist(input_neg_deploy) or not isFileExist(input_pos_deploy):
     # 如果读取不到已发布的语料文件，暂时先抛出警告
-    log.warn('无法读取已发布模型或语料库，将无法和之前的语料合并:\n{}\n{}'.format(input_neg_deploy, input_pos_deploy))
+    log.warn('无法读取已发布模型的语料库，将无法和之前的语料合并:\n{}\n{}'.format(input_neg_deploy, input_pos_deploy))
 
     if not isFileExist(input_neg_default) or not isFileExist(input_pos_default):
         # 如果没有基础语料库（SnowNPL自带的，或是线上已发布的），意味着有问题了，抛错
@@ -246,15 +273,13 @@ if not isFileExist(input_neg_deploy) or not isFileExist(input_pos_deploy):
         log.error('程序异常终止！')
         exit(999)
     else:
-        # 如果没有已发布的语料库，就是用SnowNPL模块默认自带的语料（酒店评论，可能会不精准）
+        # 如果没有已发布的语料库，就是用SnowNPL模块默认自带的语料（已经经过人工审阅，但由于行业不同，可能导致判断不精确）
         neg_merge = input_neg_default
         pos_merge = input_pos_default
-        is_first_train = True
         log.info('使用SnowNLP默认的预料数据：\n{}\n{}'.format(neg_merge, pos_merge))
 else:
     neg_merge = input_neg_deploy
     pos_merge = input_pos_deploy
-    is_first_train = False
     log.info('使用已发布的预料数据：\n{}\n{}'.format(neg_merge, pos_merge))
 
 # 检查模型文件
@@ -274,6 +299,7 @@ if not isFileExist(input_neg_words) \
         or not isFileExist(input_pos_53kf):
     log.error('无法读取以下文件之一，请确认文件存在：\n{}\n{}\n{}\n{}'.format( \
         input_neg_words, input_pos_words, input_neg_53kf, input_pos_53kf))
+    exit(999)
 else:
     # 读取文件，把自定义语料库，转化为列表
     list_pos_53kf = fileToList(input_pos_53kf)
@@ -335,7 +361,7 @@ with open(pos_merge, 'r', encoding='utf-8') as baseFile, \
     pos_docs = list(set(pos_docs))
     log.debug('去重以后的数量{}'.format(len(pos_docs)))
     # 增加自定义语料库的权重，即把自定义的语料库翻倍加入待训练数据
-    pos_docs = pos_docs + list(set(list_pos_53kf)) * 10
+    pos_docs = pos_docs + list(set(list_pos_53kf)) * 100
     log.debug('增加自定义语料权重之后数量{}'.format(len(pos_docs)))
     pos_docs = list(item + '\n' for item in pos_docs)
     resultFile.writelines(pos_docs)
@@ -355,7 +381,7 @@ with open(neg_merge, 'r', encoding='utf-8') as baseFile, \
     neg_docs = list(set(neg_docs))
     log.debug('去重以后的数量{}'.format(len(neg_docs)))
     # 增加自定义语料库的权重，即把自定义的语料库翻倍加入待训练数据
-    neg_docs = neg_docs + list(set(list_neg_53kf)) * 10
+    neg_docs = neg_docs + list(set(list_neg_53kf)) * 100
     log.debug('增加自定义语料权重之后数量{}'.format(len(neg_docs)))
     neg_docs = list(item + '\n' for item in neg_docs)
     resultFile.writelines(neg_docs)
