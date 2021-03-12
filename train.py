@@ -19,47 +19,22 @@ sys.path.append(basePath)
 # 导入自开发模块
 from common.log import Log
 from common.utils import removeFileIfExists
+from config import Config
 
 """
 全局变量
 """
 log = Log()
+baseConfig = Config()
+
+train_folder = baseConfig.get_value('project', 'train_folder')
 
 
 # ============================读入文件==================================
-# 线上已经发布的模型
-# neg.txt/pos.txt文件用于训练数据合并
-# sentiment.marshal用于模型判断正负向功能
-input_neg_deploy = os.path.join(basePath, 'deploy/neg.txt')
-input_pos_deploy = os.path.join(basePath, 'deploy/pos.txt')
-input_marshal_deploy = os.path.join(basePath, 'deploy/sentiment.marshal')
-
-# 用于在没有_deploy资源的时候，和新增训练数据进行合并训练
-# 默认数据是酒店评论数据，可能有偏差，但是总比没有基础数据、完全依靠运营设定要好
-input_neg_default = os.path.join(basePath, 'train/data/neg_default.txt')
-input_pos_default = os.path.join(basePath, 'train/data/pos_default.txt')
-
-# 正负向词库
-input_neg_words = os.path.join(basePath, 'train/data/neg_words.txt')
-input_pos_words = os.path.join(basePath, 'train/data/pos_words.txt')
-
-# 快服自定义正负向语料库
-input_neg_53kf = os.path.join(basePath, 'train/data/neg_53kf.txt')
-input_pos_53kf = os.path.join(basePath, 'train/data/pos_53kf.txt')
-
-# 待训练的语料库（支持增量）
-input_corpus = os.path.join(basePath, 'train/corpus.txt')
-
-# ============================输出文件==================================
-# 临时文件，用于查看新增数据的正负向准确性
-output_neg_tmp = os.path.join(basePath, 'train/neg_add.tmp')
-output_pos_tmp = os.path.join(basePath, 'train/pos_add.tmp')
-output_neu_tmp = os.path.join(basePath, 'train/neu_add.tmp')
-
 # neg.txt/pos.txt是集成以后的语料库，sentiment.marshal是生成的模型文件
-output_neg_file = os.path.join(basePath, 'train/neg.txt')
-output_pos_file = os.path.join(basePath, 'train/pos.txt')
-output_marshal_file = os.path.join(basePath, 'train/sentiment.marshal')
+output_neg_file = os.path.join(train_folder, 'neg.txt')
+output_pos_file = os.path.join(train_folder, 'pos.txt')
+output_marshal_file = os.path.join(train_folder, 'sentiment.marshal')
 
 log.info('开始训练模型...')
 removeFileIfExists(output_marshal_file)
