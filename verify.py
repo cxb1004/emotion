@@ -14,22 +14,19 @@ basePath = os.path.abspath(os.path.dirname(__file__))
 # 设置当前目录为执行运行目录
 sys.path.append(basePath)
 
-# 当前目录
-basePath = os.path.abspath(os.path.dirname(__file__))
-# 设置当前目录为执行运行目录
-sys.path.append(basePath)
-
 # 导入自开发模块
 from common.log import Log
 from emotionclassify import EmotionClassify
+from config import Config
 
 """
 全局变量
 """
 log = Log()
+baseConfig = Config()
 
-POS_IDX = 0.6
-NEG_IDX = 0.45
+train_folder = baseConfig.get_value('project', 'train_folder')
+train_data_folder = baseConfig.get_value('project', 'train_data_folder')
 
 FLAG_NEG = -1
 FLAG_POS = 1
@@ -37,9 +34,9 @@ FLAG_NUE = 0
 
 t = time.time()
 
-marshal_file = os.path.join(basePath, 'train/sentiment.marshal')
-pos_53kf_corpus = os.path.join(basePath, 'train/data/pos_53kf.txt')
-neg_53kf_corpus = os.path.join(basePath, 'train/data/neg_53kf.txt')
+marshal_file = os.path.join(train_folder, 'sentiment.marshal')
+pos_53kf_corpus = os.path.join(train_data_folder, 'pos_53kf.txt')
+neg_53kf_corpus = os.path.join(train_data_folder, 'neg_53kf.txt')
 
 ec = EmotionClassify(modelPath=marshal_file, pos53kfPath=pos_53kf_corpus, neg53kfPath=neg_53kf_corpus)
 
