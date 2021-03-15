@@ -56,7 +56,7 @@ z	    访客填写快捷表单	             ✔      访客填写的表单数据
 filter_talk_tag = {'e': 'e'}
 
 input_msg_file = os.path.join(trainPath, 'msg.txt')
-out_corpus_file = os.path.join(trainPath, 'corpus.txt')
+out_corpus_file = os.path.join(trainPath, train_corpus_txt)
 
 if not os.path.isfile(input_msg_file):
     log.error('原始语料库文件不存在：{}'.format(input_msg_file))
