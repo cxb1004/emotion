@@ -6,7 +6,12 @@
 1、获取待合并的正负向语料库（要么是线上deploy的，要么是默认的_default）
 2、如果train/data目录下的数据文件不存在，停止应用
 3、按行对待训练的预料进行正负向判断
-
+3.1 使用模型进行正负向判断，如果结果是正向或是负向，就直接判断；如果是中性继续下面的判断
+3.2 使用自定义词库进行正负向判断。使用文本相似度算法，用正负向自定义语料库进行相似度比较
+分别获得正负向语料库的最大相似度（相似度必须大于设定的阀值）
+3.3 使用正负向词库进行正负向判断，
+使用jieba进行分词，匹配正负向词库的数量，数量多切超过阀值的正向/负向胜出
+3.4 判别结果分别写入tmm文件，该文件用于人工审阅自动正负向判别的结果
 判断结果为正向，写入pos_add.tmp
 判断结果为负向，写入neg_add.tmp
 判断结果为中性，写入neu_add.tmp
@@ -18,10 +23,12 @@ pos.txt = pos_add.tmp + pos_merge(线上pos.txt 或 默认 pos_default.txt)
 输入文件：
 deploy目录下：
     neg.txt / pos.txt / sentiment.marshal ：使用既有的模型，对原始语料进行正负向判断
+    corpus.txt：
 train/data目录下：
     neg_default.txt / pos_default.txt：在没有deploy的数据下，使用默认数据进行训练
     neg_53kf.txt / pos_53kf.txt：
     neg_words.txt / pos_words.txt：
+
 输出文件：
 train目录下：
     neg_add.tmp / pos_add.tmp / neu_add.tmp
