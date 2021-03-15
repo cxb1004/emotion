@@ -1,7 +1,13 @@
 """
+【主要业务逻辑】
 根据自定义的语料库corpus.txt和train/data下的正负词库，区分语料库里的正向、负向、中性句
 然后和已发布的neg.txt/pos.txt进行整个，之后训练出sentiment.marshal
 
+【输入文件】
+neg.txt / pos.txt: 训练用的正负向语料库
+
+【输出文件】
+sentiment.marshal：训练产生的文件，python3是sentiment.marshal.3
 
 """
 # 导入系统模块、第三方模块
@@ -28,13 +34,16 @@ log = Log()
 baseConfig = Config()
 
 train_folder = baseConfig.get_value('project', 'train_folder')
+model_file = baseConfig.get_value('project', 'model_filename_t')
+pos_txt_file = baseConfig.get_value('project', 'corpus_pos_filename')
+neg_txt_file = baseConfig.get_value('project', 'corpus_neg_filename')
 
 
 # ============================读入文件==================================
 # neg.txt/pos.txt是集成以后的语料库，sentiment.marshal是生成的模型文件
-output_neg_file = os.path.join(train_folder, 'neg.txt')
-output_pos_file = os.path.join(train_folder, 'pos.txt')
-output_marshal_file = os.path.join(train_folder, 'sentiment.marshal')
+output_neg_file = os.path.join(train_folder, neg_txt_file)
+output_pos_file = os.path.join(train_folder, pos_txt_file)
+output_marshal_file = os.path.join(train_folder, model_file)
 
 log.info('开始训练模型...')
 removeFileIfExists(output_marshal_file)

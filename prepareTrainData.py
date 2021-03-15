@@ -63,29 +63,40 @@ train_folder = baseConfig.get_value('project', 'train_folder')
 train_data_folder = baseConfig.get_value('project', 'train_data_folder')
 deploy_folder = baseConfig.get_value('project', 'deploy_folder')
 
+filename_corpus_txt = baseConfig.get_value('project', 'train_corpus_txt')
+filename_model = baseConfig.get_value('project', 'model_filename_t')
+filename_neg_txt = baseConfig.get_value('project', 'corpus_neg_filename')
+filename_pos_txt = baseConfig.get_value('project', 'corpus_pos_filename')
+filename_pos_default_txt = baseConfig.get_value('project', 'corpus_pos_default_filename')
+filename_neg_default_txt = baseConfig.get_value('project', 'corpus_neg_default_filename')
+filename_pos_words_txt = baseConfig.get_value('project', 'words_pos_filename')
+filename_neg_words_txt = baseConfig.get_value('project', 'words_neg_filename')
+filename_pos_53kf_txt = baseConfig.get_value('project', 'corpus_pos_53kf_filename')
+filename_neg_53kf_txt = baseConfig.get_value('project', 'corpus_neg_53kf_filename')
+
 # ============================读入文件==================================
 # 线上已经发布的模型
 # neg.txt/pos.txt文件用于训练数据合并
 # sentiment.marshal用于模型判断正负向功能
-input_neg_deploy = os.path.join(deploy_folder, 'neg.txt')
-input_pos_deploy = os.path.join(deploy_folder, 'pos.txt')
-input_marshal_deploy = os.path.join(deploy_folder, 'sentiment.marshal')
+input_neg_deploy = os.path.join(deploy_folder, filename_neg_txt)
+input_pos_deploy = os.path.join(deploy_folder, filename_pos_txt)
+input_marshal_deploy = os.path.join(deploy_folder, filename_model)
 
 # 用于在没有_deploy资源的时候，和新增训练数据进行合并训练
 # 默认数据是酒店评论数据，可能有偏差，但是总比没有基础数据、完全依靠运营设定要好
-input_neg_default = os.path.join(train_data_folder, 'neg_default.txt')
-input_pos_default = os.path.join(train_data_folder, 'pos_default.txt')
+input_neg_default = os.path.join(train_data_folder, filename_neg_default_txt)
+input_pos_default = os.path.join(train_data_folder, filename_pos_default_txt)
 
 # 正负向词库
-input_neg_words = os.path.join(train_data_folder, 'neg_words.txt')
-input_pos_words = os.path.join(train_data_folder, 'pos_words.txt')
+input_neg_words = os.path.join(train_data_folder, filename_neg_words_txt)
+input_pos_words = os.path.join(train_data_folder, filename_pos_words_txt)
 
 # 快服自定义正负向语料库
-input_neg_53kf = os.path.join(train_data_folder, 'neg_53kf.txt')
-input_pos_53kf = os.path.join(train_data_folder, 'pos_53kf.txt')
+input_neg_53kf = os.path.join(train_data_folder, filename_neg_53kf_txt)
+input_pos_53kf = os.path.join(train_data_folder, filename_pos_53kf_txt)
 
 # 待训练的语料库（支持增量）
-input_corpus = os.path.join(train_folder, 'corpus.txt')
+input_corpus = os.path.join(train_folder, filename_corpus_txt)
 
 # ============================输出文件==================================
 # 临时文件，用于查看新增数据的正负向准确性
@@ -94,10 +105,8 @@ output_pos_tmp = os.path.join(train_folder, 'pos_add.tmp')
 output_neu_tmp = os.path.join(train_folder, 'neu_add.tmp')
 
 # neg.txt/pos.txt是集成以后的语料库，sentiment.marshal是生成的模型文件
-output_neg_file = os.path.join(train_folder, 'neg.txt')
-output_pos_file = os.path.join(train_folder, 'pos.txt')
-# 由于训练模型改到train.py里面执行，本程序暂时没有用到这个变量
-output_marshal_file = os.path.join(train_folder, 'sentiment.marshal')
+output_neg_file = os.path.join(train_folder, filename_neg_txt)
+output_pos_file = os.path.join(train_folder, filename_pos_txt)
 
 # 文本相似度阀值设定
 SIM_IDX = float(baseConfig.get_value('project', 'train_sim_idx'))
