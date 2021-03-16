@@ -1,21 +1,17 @@
+import time
+
+import pymysql
 from flask import Flask
+
+pymysql.install_as_MySQLdb()
+from flask_sqlalchemy import SQLAlchemy
+
 from flask_app.settings.dev import DevelopementConfig
 from flask_app.settings.prop import ProductionConfig
 from flask_app.settings.read_config import *
 from flask_app.utils.LoginStatus import VoState
 from flask_app.utils.result_json import resultVo
 from flask_app.utils import *
-
-# from redis import StrictRedis
-# from flask_wtf.csrf import CSRFProtect
-# from flask_session import Session
-import os
-import time
-import pymysql
-pymysql.install_as_MySQLdb()
-from flask_sqlalchemy import SQLAlchemy
-
-
 
 config = {
     "dev": DevelopementConfig,
@@ -25,6 +21,7 @@ config = {
 # # 为了方便redis的连接对象在函数外部可以使用,预先设置一个全局变量,接下来在函数中用于保存redis的连接
 # redis_store = None
 db = SQLAlchemy()
+
 
 def init_app(config_name):
     """项目的初始化功能"""
@@ -52,9 +49,6 @@ def init_app(config_name):
     # 启用日志功能
     setup_log(Config)
 
-
-
-
     # TODO 注册蓝图对象到app应用中
 
     # 首页模块
@@ -64,20 +58,18 @@ def init_app(config_name):
     return app
 
 
-
 import logging
 from logging.handlers import RotatingFileHandler
 
+
 # 把日志相关的配置封装成一个日志初始化函数
 def setup_log(Config):
-
-    logging_path = log_path + os.sep + time.strftime('%Y-%m',time.localtime(time.time()))
+    logging_path = log_path + os.sep + time.strftime('%Y-%m', time.localtime(time.time()))
 
     if not os.path.exists(logging_path):
         os.makedirs(logging_path)
     logs_file_name = 'logger-' + time.strftime('%Y-%m-%dT%H-%M-%S', time.localtime(time.time())) + '.log'
     log_file_path = logging_path + os.sep + logs_file_name
-
 
     # 设置日志的记录等级
     logging.basicConfig(level=Config.LOG_LEVEL)  # 调试debug级

@@ -14,7 +14,7 @@ import logging
 try:
     config_path = rootPath2 + "/config.ini"
     cf = configparser.ConfigParser()
-    cf.read(config_path)
+    cf.read(config_path, encoding='utf-8')
 
     __user = cf.get('Mysql-Database', 'user'),
     __password = cf.get('Mysql-Database', 'password'),
