@@ -1,26 +1,5 @@
 # coding: utf-8
-import sys
-import os
-curPath = os.path.abspath(os.path.dirname(__file__))
-rootPath = os.path.split(curPath)[0]
-sys.path.append(rootPath)
-
-from config.app_config import create_app
-from config.db_config import Config
-
-
-from flask_sqlalchemy import SQLAlchemy
-import pymysql
-pymysql.install_as_MySQLdb()
-app = create_app()
-
-
-# 读取配置
-
-app.config.from_object(Config)
-# 创建数据库sqlalchemy工具对象
-db = SQLAlchemy(app)
-
+from application import db
 
 class CcsCompanyLabel(db.Model):
     print("CcsCompanyLabel is running")

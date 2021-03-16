@@ -9,6 +9,4 @@ class VoState(Enum):
     PARAMETER_ERROR = (503, "参数错误")
     NO_COMPANY_FOUND = (504, "未查询到该公司")
 
-if __name__ == '__main__':
-    print(VoState['SUCCESS'].value[0])
-    print(VoState['SUCCESS'].value[1])
+
