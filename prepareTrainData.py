@@ -59,20 +59,20 @@ from config import Config
 """
 log = Log()
 baseConfig = Config()
-train_folder = baseConfig.get_value('project', 'train_folder')
-train_data_folder = baseConfig.get_value('project', 'train_data_folder')
-deploy_folder = baseConfig.get_value('project', 'deploy_folder')
+train_folder = baseConfig.get_value('py-project', 'train_folder')
+train_data_folder = baseConfig.get_value('py-project', 'train_data_folder')
+deploy_folder = baseConfig.get_value('py-project', 'deploy_folder')
 
-filename_corpus_txt = baseConfig.get_value('project', 'train_corpus_txt')
-filename_model = baseConfig.get_value('project', 'model_filename_t')
-filename_neg_txt = baseConfig.get_value('project', 'corpus_neg_filename')
-filename_pos_txt = baseConfig.get_value('project', 'corpus_pos_filename')
-filename_pos_default_txt = baseConfig.get_value('project', 'corpus_pos_default_filename')
-filename_neg_default_txt = baseConfig.get_value('project', 'corpus_neg_default_filename')
-filename_pos_words_txt = baseConfig.get_value('project', 'words_pos_filename')
-filename_neg_words_txt = baseConfig.get_value('project', 'words_neg_filename')
-filename_pos_53kf_txt = baseConfig.get_value('project', 'corpus_pos_53kf_filename')
-filename_neg_53kf_txt = baseConfig.get_value('project', 'corpus_neg_53kf_filename')
+filename_corpus_txt = baseConfig.get_value('py-project', 'train_corpus_txt')
+filename_model = baseConfig.get_value('py-project', 'model_filename_t')
+filename_neg_txt = baseConfig.get_value('py-project', 'corpus_neg_filename')
+filename_pos_txt = baseConfig.get_value('py-project', 'corpus_pos_filename')
+filename_pos_default_txt = baseConfig.get_value('py-project', 'corpus_pos_default_filename')
+filename_neg_default_txt = baseConfig.get_value('py-project', 'corpus_neg_default_filename')
+filename_pos_words_txt = baseConfig.get_value('py-project', 'words_pos_filename')
+filename_neg_words_txt = baseConfig.get_value('py-project', 'words_neg_filename')
+filename_pos_53kf_txt = baseConfig.get_value('py-project', 'corpus_pos_53kf_filename')
+filename_neg_53kf_txt = baseConfig.get_value('py-project', 'corpus_neg_53kf_filename')
 
 # ============================读入文件==================================
 # 线上已经发布的模型
@@ -109,14 +109,14 @@ output_neg_file = os.path.join(train_folder, filename_neg_txt)
 output_pos_file = os.path.join(train_folder, filename_pos_txt)
 
 # 文本相似度阀值设定
-SIM_IDX = float(baseConfig.get_value('project', 'train_sim_idx'))
+SIM_IDX = float(baseConfig.get_value('py-project', 'train_sim_idx'))
 
 # 模型判断正负向阀值设定
-POS_IDX = float(baseConfig.get_value('project', 'train_pos_idx'))
-NEG_IDX = float(baseConfig.get_value('project', 'train_neg_idx'))
+POS_IDX = float(baseConfig.get_value('py-project', 'train_pos_idx'))
+NEG_IDX = float(baseConfig.get_value('py-project', 'train_neg_idx'))
 
 # 正负向词语命中数量
-WORDS_MATCH_LIMIT = int(baseConfig.get_value('project', 'train_words_match_limit'))
+WORDS_MATCH_LIMIT = int(baseConfig.get_value('py-project', 'train_words_match_limit'))
 
 FLAG_NEG = -1
 FLAG_POS = 1

@@ -28,8 +28,8 @@ from config import Config
 log = Log()
 baseConfig = Config()
 
-trainPath = baseConfig.get_value('project', 'train_folder')
-train_corpus_txt = baseConfig.get_value('project', 'train_corpus_txt')
+trainPath = baseConfig.get_value('py-project', 'train_folder')
+train_corpus_txt = baseConfig.get_value('py-project', 'train_corpus_txt')
 
 """
 对话资料type说明：

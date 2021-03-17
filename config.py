@@ -28,4 +28,4 @@ class Config:
             raise e
 
     def get_project_root_dir(self):
-        return str(self.get_value('project', 'root_folder'))
+        return str(self.get_value('py-project', 'root_folder'))

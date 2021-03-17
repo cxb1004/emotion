@@ -26,11 +26,11 @@ from config import Config
 log = Log()
 baseConfig = Config()
 
-train_folder = baseConfig.get_value('project', 'train_folder')
-train_data_folder = baseConfig.get_value('project', 'train_data_folder')
-filename_model = baseConfig.get_value('project', 'model_filename_t')
-filename_pos_53kf_txt = baseConfig.get_value('project', 'corpus_pos_53kf_filename')
-filename_neg_53kf_txt = baseConfig.get_value('project', 'corpus_neg_53kf_filename')
+train_folder = baseConfig.get_value('py-project', 'train_folder')
+train_data_folder = baseConfig.get_value('py-project', 'train_data_folder')
+filename_model = baseConfig.get_value('py-project', 'model_filename_t')
+filename_pos_53kf_txt = baseConfig.get_value('py-project', 'corpus_pos_53kf_filename')
+filename_neg_53kf_txt = baseConfig.get_value('py-project', 'corpus_neg_53kf_filename')
 
 FLAG_NEG = -1
 FLAG_POS = 1

@@ -30,19 +30,19 @@ log.info('开始执行deploy.py')
 log.info('开始发布前的检查工作...')
 
 # 准备发布的文件的名称
-model_filename_r = baseConfig.get_value('project', 'model_filename_r')
+model_filename_r = baseConfig.get_value('py-project', 'model_filename_r')
 # 训练模型使用的正负向语料库
-corpus_pos_filename = baseConfig.get_value('project', 'corpus_pos_filename')
-corpus_neg_filename = baseConfig.get_value('project', 'corpus_neg_filename')
+corpus_pos_filename = baseConfig.get_value('py-project', 'corpus_pos_filename')
+corpus_neg_filename = baseConfig.get_value('py-project', 'corpus_neg_filename')
 # 快服自定义正负向语料库
-corpus_pos_53kf_filename = baseConfig.get_value('project', 'corpus_pos_53kf_filename')
-corpus_neg_53kf_filename = baseConfig.get_value('project', 'corpus_neg_53kf_filename')
+corpus_pos_53kf_filename = baseConfig.get_value('py-project', 'corpus_pos_53kf_filename')
+corpus_neg_53kf_filename = baseConfig.get_value('py-project', 'corpus_neg_53kf_filename')
 
 # 训练目录
-train_folder = baseConfig.get_value('project', 'train_folder')
-train_data_folder = baseConfig.get_value('project', 'train_data_folder')
+train_folder = baseConfig.get_value('py-project', 'train_folder')
+train_data_folder = baseConfig.get_value('py-project', 'train_data_folder')
 # 发布目录
-deploy_folder = baseConfig.get_value('project', 'deploy_folder')
+deploy_folder = baseConfig.get_value('py-project', 'deploy_folder')
 # 备份目录
 backup_folder = os.path.join(deploy_folder, get_timestamp('ymdhms'))
 os.makedirs(backup_folder)

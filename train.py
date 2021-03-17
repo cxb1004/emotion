@@ -33,10 +33,10 @@ from config import Config
 log = Log()
 baseConfig = Config()
 
-train_folder = baseConfig.get_value('project', 'train_folder')
-model_file = baseConfig.get_value('project', 'model_filename_t')
-pos_txt_file = baseConfig.get_value('project', 'corpus_pos_filename')
-neg_txt_file = baseConfig.get_value('project', 'corpus_neg_filename')
+train_folder = baseConfig.get_value('py-project', 'train_folder')
+model_file = baseConfig.get_value('py-project', 'model_filename_t')
+pos_txt_file = baseConfig.get_value('py-project', 'corpus_pos_filename')
+neg_txt_file = baseConfig.get_value('py-project', 'corpus_neg_filename')
 
 
 # ============================读入文件==================================
