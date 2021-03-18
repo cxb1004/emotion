@@ -5,7 +5,7 @@ from flask_migrate import Migrate, MigrateCommand
 # 自定义的包类
 from flask_app import init_app, db, environment
 
-print("@@@@@@@@@@@%s" %(environment))
+print("@@@@@@@@@@@{}".format(environment))
 app = init_app(environment)
 app = init_app("prop")
 

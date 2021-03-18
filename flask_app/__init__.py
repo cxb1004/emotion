@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flask_app.settings.dev import DevelopementConfig
 from flask_app.settings.prop import ProductionConfig
-from flask_app.settings.read_config import *
+from flask_app.settings.flask_config import *
 from flask_app.utils.LoginStatus import VoState
 from flask_app.utils.result_json import resultVo
 from flask_app.utils import *
@@ -27,7 +27,7 @@ def init_app(config_name):
     """项目的初始化功能"""
     app = Flask(__name__)
 
-    # 设置配置类
+    # 设置配置类，这里是通过配置名称（dev/prop）来选择配置类，其实就是不同的配置
     Config = config[config_name]
 
     # 加载配置

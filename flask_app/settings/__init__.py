@@ -1,5 +1,5 @@
 # from redis import StrictRedis
-from .read_config import *
+from .flask_config import *
 
 
 class Config(object):
