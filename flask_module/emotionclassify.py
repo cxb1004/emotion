@@ -1,4 +1,3 @@
-import logging as log
 import os
 import sys
 
@@ -12,9 +11,9 @@ sys.path.append(basePath)
 from common.utils import isFileExist
 from common.textSimilarity import CosSim
 from config import Config
+from flask_module.flask_log import FlaskLog
 
-baseConfig = Config()
-
+log = FlaskLog()
 
 class EmotionClassify:
     DICT_TAG = {'positive': 1, 'negative': -1, 'neutral': 0}
@@ -23,11 +22,13 @@ class EmotionClassify:
     FLAG_NEG = -1
     FLAG_NEU = 0
 
+    _config = Config()
+
     # 默认模型文件路径
-    __DEPLOY_PATH = baseConfig.get_value('py-project', 'deploy_folder')
-    __FILENAME_MODEL = baseConfig.get_value('py-project', 'model_filename_t')
-    __FILENAME_POS_53KF_CORPUS = baseConfig.get_value('py-project', 'corpus_pos_53kf_filename')
-    __FILENAME_NEG_53KF_CORPUS = baseConfig.get_value('py-project', 'corpus_neg_53kf_filename')
+    __DEPLOY_PATH = _config.get_value('py-project', 'deploy_folder')
+    __FILENAME_MODEL = _config.get_value('py-project', 'model_filename_t')
+    __FILENAME_POS_53KF_CORPUS = _config.get_value('py-project', 'corpus_pos_53kf_filename')
+    __FILENAME_NEG_53KF_CORPUS = _config.get_value('py-project', 'corpus_neg_53kf_filename')
 
     __DEFAULT_MODEL_PATH = os.path.join(__DEPLOY_PATH, __FILENAME_MODEL)
     # 默认自定义（53kf）的语料库文件
@@ -40,11 +41,11 @@ class EmotionClassify:
     __neg_53kf_list = None
 
     # 相似度阀值
-    __VALUE_SIM = float(baseConfig.get_value('py-project', 'run_sim_idx'))
+    __VALUE_SIM = float(_config.get_value('py-project', 'run_sim_idx'))
     # 模型正向阀值
-    __VALUE_POS = float(baseConfig.get_value('py-project', 'run_pos_idx'))
+    __VALUE_POS = float(_config.get_value('py-project', 'run_pos_idx'))
     # 模型负向阀值
-    __VALUE_NEG = float(baseConfig.get_value('py-project', 'run_neg_idx'))
+    __VALUE_NEG = float(_config.get_value('py-project', 'run_neg_idx'))
 
     RTN_EMOTION = 'emotion'
     RTN_EMOTION_TAG = 'emotion_tag'

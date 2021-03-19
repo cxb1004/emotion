@@ -3,10 +3,6 @@ import re
 import shutil
 import time
 
-from common.log import Log
-
-log = Log()
-
 
 def removeFileIfExists(filePath):
     """
@@ -16,7 +12,6 @@ def removeFileIfExists(filePath):
     """
     if os.path.isfile(filePath):
         os.remove(filePath)
-        log.debug('删除已经存在的文件{}'.format(filePath))
 
 
 def replaceMutiSpace(str):
