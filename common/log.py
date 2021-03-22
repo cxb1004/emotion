@@ -1,9 +1,9 @@
 import logging.handlers
-from config import Config
+from config import ProjectConfig
 
 
 class Log:
-    config = Config()
+    config = ProjectConfig()
 
     __DEFAULT_LOGGER_NAME = config.get_value('log', 'default_logger_name')
     __DEFAULT_LOGGER_FORMAT = config.get_value('log', 'default_logger_format')

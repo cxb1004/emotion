@@ -23,10 +23,10 @@ sys.path.append(basePath)
 # 导入自开发模块
 from common.log import Log
 from common.utils import removeFileIfExists, remove53Emoji
-from config import Config
+from config import ProjectConfig
 
 log = Log()
-baseConfig = Config()
+baseConfig = ProjectConfig()
 
 trainPath = baseConfig.get_value('py-project', 'train_folder')
 train_corpus_txt = baseConfig.get_value('py-project', 'train_corpus_txt')
