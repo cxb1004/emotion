@@ -4,11 +4,11 @@ from flask_script import Manager
 
 # 自定义的包类
 # from flask_app import init_app, db, environment
-from config import KFConfig
+from config import ProjectConfig
 from flask_module import init_app
 
 # 初始化配置
-baseConfig = KFConfig()
+baseConfig = ProjectConfig()
 
 # 使用配置文件，提取必要的参数，创建Flask App对象
 app = init_app()

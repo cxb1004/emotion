@@ -4,11 +4,11 @@ from flask import request
 
 from flask_module.emotion_blueprint import emotion_blueprint
 from flask_module.emotion_blueprint.emotionclassify import EmotionClassify
-from config import KFConfig
+from config import ProjectConfig
 from flask_module.flask_log import FlaskLog as log
 from flask_module.result_json import return_fail, return_success
 
-baseConfig = KFConfig()
+baseConfig = ProjectConfig()
 emotionClassify = None
 
 
