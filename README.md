@@ -172,6 +172,70 @@ emotion_value:情感判断的值
 
 注意：config.ini必须在同一目录
 
+##Flask 部署说明
+###文件结构
+
+---
+ - start_flask.py
+ - flask_module
+ 
+   |- __init__.py：启动Flask App应用，包括注册各个业务模块
+   
+   |- flask_config.py：使用Config对象创建Flask app对象
+   
+   |- flask_log.py：Flask Web App使用的日志
+   
+   |- result_json: http返回json格式的数据 
+   
+   |- config_blueprint：配置模块
+      
+        |- __init__.py: 创建config_blueprint模块
+       
+        |- config_info.py: 提供两个对外的功能，一个是根目录信息，一个是Flask Web App的所有配置参数
+   
+   |- emotion_blueprint：情感分析模块
+   
+        |- __init__.py：创建emotion_blueprint模块
+        
+        |- emotion_func.py: 情感分析模块对外的web接口
+        
+        |- emotionclassify.py：情感分析业务类
+        
+###使用说明
+#### 初始化创建
+1、按结构复制文件目录：
+ 
+ -  start_flask.py
+ -  /flask_module/__init__.py
+ -  /flask_module/flask_config.py
+ -  /flask_module/flask_log.py
+ -  /flask_module/result_json.py
+ -  /flask_module/config_blueprint/__init__.py
+ -  /flask_module/config_blueprint/config_info.py
+
+复制之后启动start_flask可以启动应用
+
+#### 新增业务模块
+1、新建业务模块目录xxx
+
+2、在业务模块目录下新建__init__.py，并添加代码
+
+    from flask import Blueprint
+    
+    emotion_blueprint = Blueprint('emotion_blueprint', __name__)
+
+    # 这一句必须放在Blueprint()之下，否则会出现ImportError: cannot import name 'xxx_blueprint' 的错误
+    from flask_module.emotion_blueprint import emotion_func
+    
+3、在业务模块目录下建立业务接口代码文件emotion_func （和上面的import一致）
+
+里面建立各种接口的域名映射和业务代码，也可以引入其他业务代码
+
+4、在flask_module/__init__.py里面，把建好的blueprint注册到app里面
+
+    app.register_blueprint(emotion_blueprint, url_prefix='/emotion')
+      
+
 
 ##第二期计划
 ###1、把训练过程在saas后台管理界面中实现
