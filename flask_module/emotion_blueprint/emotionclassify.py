@@ -10,7 +10,7 @@ sys.path.append(basePath)
 
 from common.utils import isFileExist
 from common.textSimilarity import CosSim
-from config import Config
+from config import KFConfig
 from flask_module.flask_log import FlaskLog
 
 log = FlaskLog()
@@ -22,7 +22,7 @@ class EmotionClassify:
     FLAG_NEG = -1
     FLAG_NEU = 0
 
-    _config = Config()
+    _config = KFConfig()
 
     # 默认模型文件路径
     __DEPLOY_PATH = _config.get_value('py-project', 'deploy_folder')

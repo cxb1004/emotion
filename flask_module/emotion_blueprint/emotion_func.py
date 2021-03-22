@@ -4,13 +4,12 @@ from flask import request
 
 from flask_module.emotion_blueprint import emotion_blueprint
 from flask_module.emotion_blueprint.emotionclassify import EmotionClassify
-from flask_module.flask_config import FlaskConfig
-from flask_module.flask_log import FlaskLog
+from config import KFConfig
+from flask_module.flask_log import FlaskLog as log
 from flask_module.result_json import return_fail, return_success
 
-baseConfig = FlaskConfig()
-log = FlaskLog()
-emotionClassify = EmotionClassify()
+baseConfig = KFConfig()
+emotionClassify = None
 
 
 def init_emotion_classify(_p_config):
@@ -44,7 +43,7 @@ def classify():
         log.error('请求参数：{}'.format(request.data))
         return return_fail('参数缺失：{}'.format('text'))
     else:
-        global emotionClassify
+        # global emotionClassify
         if emotionClassify is None:
             init_emotion_classify(baseConfig)
 

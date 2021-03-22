@@ -1,6 +1,6 @@
 import logging.handlers
 
-from config import Config
+from config import KFConfig
 
 
 def info(msg):
@@ -11,7 +11,7 @@ class FlaskLog:
     __default_log = None
 
     def __init__(self):
-        _config = Config()
+        _config = KFConfig()
         flask_logger_name = _config.get_value('flask-log', 'flask_logger_name')
         flask_logger_format = _config.get_value('flask-log', 'flask_logger_format')
         flask_logger_level = logging.getLevelName(_config.get_value('flask-log', 'flask_logger_level'))
