@@ -15,6 +15,7 @@ from flask_module.flask_log import FlaskLog
 
 log = FlaskLog()
 
+
 class EmotionClassify:
     DICT_TAG = {'positive': 1, 'negative': -1, 'neutral': 0}
     DICT_TAG_S = {v: k for k, v in DICT_TAG.items()}

@@ -3,8 +3,8 @@ from flask import current_app
 from flask_module.config_blueprint import config_blueprint
 
 
-@config_blueprint.route('/check', methods=['GET', 'POST'])
-def check():
+@config_blueprint.route('/', methods=['GET', 'POST'])
+def index():
     return 'the flask server is running normally...'
 
 

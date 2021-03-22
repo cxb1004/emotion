@@ -31,7 +31,7 @@ def init_emotion_classify(_p_config):
         emotionClassify.setConfigValue(sim_idx, pos_idx, neg_idx)
         log.info('初始化情感分析器完成...')
     except Exception as ex:
-        log.error(ex)
+        log.error_ex("情感分析器创建失败：", ex)
         raise Exception('情感分析器创建失败！')
 
 
@@ -43,7 +43,7 @@ def classify():
         log.error('请求参数：{}'.format(request.data))
         return return_fail('参数缺失：{}'.format('text'))
     else:
-        # global emotionClassify
+        global emotionClassify
         if emotionClassify is None:
             init_emotion_classify(baseConfig)
 
@@ -54,8 +54,13 @@ def classify():
             data = emotionClassify.classify(txt)
             rtn = return_success(data)
         except Exception as ex:
-            log.error(ex)
+            log.error_ex('情感分析操作失败：', ex)
             rtn = return_fail(str(ex))
         finally:
             log.info('请求完成：{}'.format(rtn))
             return rtn
+
+
+@emotion_blueprint.route('/', methods=['GET', 'POST'])
+def index():
+    return return_success('情感判断模块运行正常，请访问公共接口。')

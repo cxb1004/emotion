@@ -3,12 +3,8 @@ import logging.handlers
 from config import ProjectConfig
 
 
-def info(msg):
-    FlaskLog.__default_log.info(msg)
-
-
 class FlaskLog:
-    __default_log = None
+    __flask_log = None
 
     def __init__(self):
         _config = ProjectConfig()
@@ -24,15 +20,16 @@ class FlaskLog:
         静态初始化
         """
         # 内置日志
-        FlaskLog.__default_log = logging.getLogger(flask_logger_name)
+        FlaskLog.__flask_log = logging.getLogger(flask_logger_name)
+
         # 默认日志配置（日志格式、日志等级）
         __default_formatter = logging.Formatter(flask_logger_format)
-        FlaskLog.__default_log.setLevel(flask_logger_level)
+        FlaskLog.__flask_log.setLevel(flask_logger_level)
         # 默认往控制台输出日志
         __console = logging.StreamHandler()
         __console.setLevel(flask_logger_level)
         __console.setFormatter(__default_formatter)
-        FlaskLog.__default_log.addHandler(__console)
+        FlaskLog.__flask_log.addHandler(__console)
         #
         __fileByDateHandle = logging.handlers.TimedRotatingFileHandler(filename=flask_logger_logfile,
                                                                        when=flask_logger_when,
@@ -41,20 +38,24 @@ class FlaskLog:
                                                                        encoding=flask_logger_encoding)
         __fileByDateHandle.setLevel(flask_logger_level)
         __fileByDateHandle.setFormatter(__default_formatter)
-        FlaskLog.__default_log.addHandler(__fileByDateHandle)
+        FlaskLog.__flask_log.addHandler(__fileByDateHandle)
 
     @staticmethod
     def info(msg):
-        FlaskLog.__default_log.info(msg)
+        FlaskLog.__flask_log.info(msg)
 
     @staticmethod
     def debug(msg):
-        FlaskLog.__default_log.debug(msg)
+        FlaskLog.__flask_log.debug(msg)
 
     @staticmethod
     def warn(self, msg):
-        FlaskLog.__default_log.warning(msg)
+        FlaskLog.__flask_log.warning(msg)
 
     @staticmethod
     def error(self, msg):
-        FlaskLog.__default_log.error(msg)
+        FlaskLog.__flask_log.error(msg)
+
+    @staticmethod
+    def error_ex(self, msg):
+        FlaskLog.__flask_log.exception(msg, exc_info=True)
