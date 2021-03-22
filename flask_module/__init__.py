@@ -7,9 +7,11 @@
 """
 from flask import Flask
 
-from flask_module.emotionclassify import EmotionClassify
 from flask_module.flask_config import FlaskConfig
 from flask_module.flask_log import FlaskLog as log
+
+from flask_module.config_blueprint import config_blueprint
+from flask_module.emotion_blueprint import emotion_blueprint
 
 proj_config = None
 
@@ -24,6 +26,13 @@ def init_app():
 
     # TODO 直接从配置文件读取Flask App的相关参数
     app.config.from_object(app_config)
+
+    """
+    加载业务模块
+    """
+    # 加载情感判断模块,设置前置域名为emotion
+    app.register_blueprint(config_blueprint, url_prefix='/config')
+    app.register_blueprint(emotion_blueprint, url_prefix='/emotion')
 
     log.info('Flask App initial is done')
     return app
