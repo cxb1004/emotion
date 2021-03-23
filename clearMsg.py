@@ -76,7 +76,7 @@ with open(input_msg_file, 'r', encoding='utf-8') as inputFile:
             if filter_talk_tag.get(tag) is not None:
                 continue
             sentence = str(line_data[3])
-        except:
+        except Exception as ex:
             log.warn('数据出错{}'.format(line_data))
             continue
         else:

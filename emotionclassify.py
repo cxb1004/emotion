@@ -38,10 +38,10 @@ sys.path.append(basePath)
 from common.log import Log
 from common.utils import isFileExist
 from common.textSimilarity import CosSim
-from config import Config
+from config import ProjectConfig
 
 log = Log()
-baseConfig = Config()
+baseConfig = ProjectConfig()
 
 
 class EmotionClassify:
@@ -112,8 +112,8 @@ class EmotionClassify:
         if modelPath is not None:
             self.__senti = Sentiment()
             try:
-                self.__senti.load(modelPath)
-            except:
+                self.__senti.load(modelPath, iszip=True)
+            except Exception as ex:
                 log.error("无法找到对应的模型文件：{}".format(modelPath))
                 log.warn("如果是python 3.x以上版本，模块底层会查询以.3结尾的文件，请请检查文件命名是否正确")
                 self.__senti = None

@@ -52,19 +52,20 @@ sys.path.append(basePath)
 from common.log import Log
 from common.utils import isFileExist, removeFileIfExists
 from common.textSimilarity import CosSim
-from config import Config
+from config import ProjectConfig
 
 """
 全局变量
 """
 log = Log()
-baseConfig = Config()
+baseConfig = ProjectConfig()
 train_folder = baseConfig.get_value('py-project', 'train_folder')
 train_data_folder = baseConfig.get_value('py-project', 'train_data_folder')
 deploy_folder = baseConfig.get_value('py-project', 'deploy_folder')
 
 filename_corpus_txt = baseConfig.get_value('py-project', 'train_corpus_txt')
 filename_model = baseConfig.get_value('py-project', 'model_filename_t')
+filename_model_r = baseConfig.get_value('py-project', 'model_filename_r')
 filename_neg_txt = baseConfig.get_value('py-project', 'corpus_neg_filename')
 filename_pos_txt = baseConfig.get_value('py-project', 'corpus_pos_filename')
 filename_pos_default_txt = baseConfig.get_value('py-project', 'corpus_pos_default_filename')
@@ -299,13 +300,12 @@ else:
     log.info('使用已发布的预料数据：\n{}\n{}'.format(neg_merge, pos_merge))
 
 # 检查模型文件
-if not isFileExist(input_marshal_deploy):
+if not isFileExist(os.path.join(deploy_folder, filename_model_r)):
     log.warn('无法读取已发布的情感判断模型，部分判断策略将失效')
     test_Model = None
 else:
     log.info('开始载入已有情感判断模型')
-    test_Model = Sentiment()
-    test_Model.load(input_marshal_deploy)
+    test_Model = Sentiment().load(input_marshal_deploy, iszip=True)
     log.info('完成载入已有情感判断模型')
 
 # 检查自定义的语料库和正负向词库

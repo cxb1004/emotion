@@ -45,9 +45,8 @@ class Log:
     def warn(self, msg):
         self.__default_log.warning(msg)
 
-    def error(self, msg, exception):
-        self.__default_log.error(msg)
-        self.__default_log.error(exception)
+    def error_ex(self, msg, exception):
+        self.__default_log.error(msg, exc_info=True)
 
     def error(self, msg):
         self.__default_log.error(msg)

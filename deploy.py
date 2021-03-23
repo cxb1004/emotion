@@ -19,11 +19,11 @@ basePath = os.path.abspath(os.path.dirname(__file__))
 # 设置当前目录为执行运行目录
 sys.path.append(basePath)
 
-from config import Config
+from config import ProjectConfig
 from common.log import Log
 from common.utils import file_update_time_format, isFileExist, get_timestamp, copyFile
 
-baseConfig = Config()
+baseConfig = ProjectConfig()
 log = Log()
 
 log.info('开始执行deploy.py')

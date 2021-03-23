@@ -1,3 +1,30 @@
+"""
+情感分析的主类
+具体的调用方法可以参见verify.py
+举例：
+from emotionclassify import EmotionClassify
+ec = EmotionClassify(modelPath=marshal_file, pos53kfPath=pos_53kf_corpus, neg53kfPath=neg_53kf_corpus)
+ec.setConfigValue(None, 0.6, 0.4)
+rtn = ec.classify(inputTxt)
+
+【主要逻辑】
+1、创建对象的时候，需要输入3个参数：
+modelPath：模型文件位置，其中模型文件名应该是sentiment.marshal，系统自动会判断python3加上.3后缀
+pos53kfPath / neg53kfPath：自定义的正负向语料库，用于文本相似度判别
+2、设置参数setConfigValue(simValue=None, posValue=None, negValue=None)
+simValue：文本相似度的阀值，大于等于该值以上被认为是相似度达标
+posValue：模型判断的正向判定阀值。大于等于该值的是正向
+negValue：模型判断的负向判定阀值。小于等于该值的是负向
+3、返回参数
+返回示例：{'emotion': 1, 'emotion_tag': 'positive', 'emotion_value': 0.9021792448075795, 'classify': 'Model'}
+emotion：情感分类ID    1=正向  -1=负向  0=中性
+emotion_tag：情感分类标签    positive/negative/neutral
+classify：分类的工具   Model：是通过模型判断   CosSim：文本相似度算法判断
+emotion_value:情感判断的值
+当Model：是指模型计算的情感值，小数，值越大越是正向，越小越是负向
+当CosSim：文本相似度，是指正向/负向文本相似度的最大值
+
+"""
 import os
 import sys
 
@@ -8,12 +35,13 @@ basePath = os.path.abspath(os.path.dirname(__file__))
 # 设置当前目录为执行运行目录
 sys.path.append(basePath)
 
+from common.log import Log
 from common.utils import isFileExist
 from common.textSimilarity import CosSim
 from config import ProjectConfig
-from flask_module.flask_log import FlaskLog
 
-log = FlaskLog()
+log = Log()
+baseConfig = ProjectConfig()
 
 
 class EmotionClassify:
@@ -23,13 +51,11 @@ class EmotionClassify:
     FLAG_NEG = -1
     FLAG_NEU = 0
 
-    _config = ProjectConfig()
-
     # 默认模型文件路径
-    __DEPLOY_PATH = _config.get_value('py-project', 'deploy_folder')
-    __FILENAME_MODEL = _config.get_value('py-project', 'model_filename_t')
-    __FILENAME_POS_53KF_CORPUS = _config.get_value('py-project', 'corpus_pos_53kf_filename')
-    __FILENAME_NEG_53KF_CORPUS = _config.get_value('py-project', 'corpus_neg_53kf_filename')
+    __DEPLOY_PATH = baseConfig.get_value('py-project', 'deploy_folder')
+    __FILENAME_MODEL = baseConfig.get_value('py-project', 'model_filename_t')
+    __FILENAME_POS_53KF_CORPUS = baseConfig.get_value('py-project', 'corpus_pos_53kf_filename')
+    __FILENAME_NEG_53KF_CORPUS = baseConfig.get_value('py-project', 'corpus_neg_53kf_filename')
 
     __DEFAULT_MODEL_PATH = os.path.join(__DEPLOY_PATH, __FILENAME_MODEL)
     # 默认自定义（53kf）的语料库文件
@@ -42,11 +68,11 @@ class EmotionClassify:
     __neg_53kf_list = None
 
     # 相似度阀值
-    __VALUE_SIM = float(_config.get_value('py-project', 'run_sim_idx'))
+    __VALUE_SIM = float(baseConfig.get_value('py-project', 'run_sim_idx'))
     # 模型正向阀值
-    __VALUE_POS = float(_config.get_value('py-project', 'run_pos_idx'))
+    __VALUE_POS = float(baseConfig.get_value('py-project', 'run_pos_idx'))
     # 模型负向阀值
-    __VALUE_NEG = float(_config.get_value('py-project', 'run_neg_idx'))
+    __VALUE_NEG = float(baseConfig.get_value('py-project', 'run_neg_idx'))
 
     RTN_EMOTION = 'emotion'
     RTN_EMOTION_TAG = 'emotion_tag'
@@ -55,13 +81,14 @@ class EmotionClassify:
 
     def __init__(self, modelPath=None, pos53kfPath=None, neg53kfPath=None):
         log.debug('开始实例化EmotionClassify')
+        global __DEFAULT_MODEL_PATH, __DEFAULT_POS_53KF_PATH, __DEFAULT_NEG_53KF_PATH
 
         if modelPath is None:
-            modelPath = self.__DEFAULT_MODEL_PATH
+            modelPath = __DEFAULT_MODEL_PATH
         if pos53kfPath is None:
-            pos53kfPath = self.__DEFAULT_POS_53KF_PATH
+            pos53kfPath = __DEFAULT_POS_53KF_PATH
         if neg53kfPath is None:
-            neg53kfPath = self.__DEFAULT_NEG_53KF_PATH
+            neg53kfPath = __DEFAULT_NEG_53KF_PATH
 
         self.loadResources(modelPath=modelPath, posCorpusPath=pos53kfPath, negCorpusPath=neg53kfPath)
 
@@ -85,11 +112,10 @@ class EmotionClassify:
         if modelPath is not None:
             self.__senti = Sentiment()
             try:
-                self.__senti.load(modelPath)
+                self.__senti.load(modelPath, iszip=True)
             except Exception as ex:
                 log.error("无法找到对应的模型文件：{}".format(modelPath))
-                log.warning("如果是python 3.x以上版本，模块底层会查询以.3结尾的文件，请请检查文件命名是否正确")
-                log.error(ex)
+                log.warn("如果是python 3.x以上版本，模块底层会查询以.3结尾的文件，请请检查文件命名是否正确")
                 self.__senti = None
 
         # 读取正向自定义语料库
@@ -111,13 +137,13 @@ class EmotionClassify:
     def setConfigValue(self, simValue=None, posValue=None, negValue=None):
         # 相似度阀值
         if simValue is not None:
-            self.__VALUE_SIM = float(simValue)
+            self.__VALUE_SIM = simValue
         # 模型正向阀值
         if posValue is not None:
-            self.__VALUE_POS = float(posValue)
+            self.__VALUE_POS = posValue
         # 模型负向阀值
         if negValue is not None:
-            self.__VALUE_NEG = float(negValue)
+            self.__VALUE_NEG = negValue
 
     def classify(self, text):
         """

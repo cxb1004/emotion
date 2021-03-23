@@ -18,13 +18,13 @@ sys.path.append(basePath)
 # 导入自开发模块
 from common.log import Log
 from emotionclassify import EmotionClassify
-from config import Config
+from config import ProjectConfig
 
 """
 全局变量
 """
 log = Log()
-baseConfig = Config()
+baseConfig = ProjectConfig()
 
 train_folder = baseConfig.get_value('py-project', 'train_folder')
 train_data_folder = baseConfig.get_value('py-project', 'train_data_folder')

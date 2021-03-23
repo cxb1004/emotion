@@ -25,13 +25,13 @@ sys.path.append(basePath)
 # 导入自开发模块
 from common.log import Log
 from common.utils import removeFileIfExists
-from config import Config
+from config import ProjectConfig
 
 """
 全局变量
 """
 log = Log()
-baseConfig = Config()
+baseConfig = ProjectConfig()
 
 train_folder = baseConfig.get_value('py-project', 'train_folder')
 model_file = baseConfig.get_value('py-project', 'model_filename_t')
@@ -61,7 +61,7 @@ train_Model.train(neg_docs=neg_docs, pos_docs=pos_docs)
 log.info('模型训练完成')
 
 log.info('开始生成模型文件...')
-train_Model.save(output_marshal_file)
+train_Model.save(output_marshal_file, iszip=True)
 log.info('模型文件生成成功：{}'.format(output_marshal_file))
 
 log.info('程序正常结束')

@@ -7,10 +7,10 @@ basePath = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(basePath)
 from common.log import Log
 from emotionclassify import EmotionClassify
-from config import Config
+from config import ProjectConfig
 
 log = Log()
-baseConfig = Config()
+baseConfig = ProjectConfig()
 
 deploy_path = baseConfig.get_value('py-project', 'deploy_folder')
 file_model = baseConfig.get_value('py-project', 'model_filename_t')
