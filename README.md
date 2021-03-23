@@ -172,7 +172,7 @@ emotion_value:情感判断的值
 
 注意：config.ini必须在同一目录
 
-##Flask 部署说明
+##Flask Web 部署说明
 ###文件结构
 
 ---
