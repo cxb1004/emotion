@@ -137,13 +137,13 @@ class EmotionClassify:
     def setConfigValue(self, simValue=None, posValue=None, negValue=None):
         # 相似度阀值
         if simValue is not None:
-            self.__VALUE_SIM = simValue
+            self.__VALUE_SIM = float(simValue)
         # 模型正向阀值
         if posValue is not None:
-            self.__VALUE_POS = posValue
+            self.__VALUE_POS = float(posValue)
         # 模型负向阀值
         if negValue is not None:
-            self.__VALUE_NEG = negValue
+            self.__VALUE_NEG = float(negValue)
 
     def classify(self, text):
         """
