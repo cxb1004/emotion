@@ -10,9 +10,10 @@ from flask import Flask, redirect, url_for
 from flask_module.config_blueprint import config_blueprint
 from flask_module.emotion_blueprint import emotion_blueprint
 from flask_module.flask_config import FlaskConfig
-from flask_module.flask_log import FlaskLog as log
+from flask_module.flask_log import FlaskLog
 
 proj_config = None
+log = FlaskLog()
 
 
 def init_app():
