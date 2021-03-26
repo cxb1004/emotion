@@ -162,11 +162,11 @@ class EmotionClassify:
         neg_max_value = 0
         for line in self.__pos_53kf_list:
             v = self.__sim.getSimilarityIndex(text, line)
-            if v > pos_max_value and v >= self.__VALUE_POS:
+            if v > pos_max_value and v >= self.__VALUE_SIM:
                 pos_max_value = v
         for line in self.__neg_53kf_list:
             v = self.__sim.getSimilarityIndex(text, line)
-            if v > neg_max_value and v >= self.__VALUE_NEG:
+            if v > neg_max_value and v >= self.__VALUE_SIM:
                 neg_max_value = v
 
         # 如果自定义正负向语料库有结果，就直接返回
